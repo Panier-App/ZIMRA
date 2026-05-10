@@ -1,0 +1,35 @@
+{
+  "name": "@panier/zimra",
+  "version": "1.0.0",
+  "description": "A type-safe and frictionless library for ZIMRA Fiscalisation",
+  "keywords": [
+    "typescript",
+    "zimra",
+    "fiscalisation",
+    "panier"
+  ],
+  "homepage": "https://github.com/Panier-App/ZIMRA",
+  "bugs": {
+    "url": "https://github.com/Panier-App/ZIMRA/issues"
+  },
+  "author": "Panier <support@panier.app> (https://panier.app)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Panier-App/ZIMRA.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^3.8.3",
+    "typescript": "^6.0.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "ci": "npm run build",
+    "format": "prettier --write ."
+  }
+}
