@@ -1,6 +1,6 @@
 {
   "name": "@panierapp/zimra",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A type-safe and frictionless library for ZIMRA Fiscalisation",
   "keywords": [
     "typescript",
