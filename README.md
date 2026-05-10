@@ -1,5 +1,5 @@
-![example workflow](https://github.com/github/Panier-App/ZIMRA/workflows/ci.yml/badge.svg)
+![Build Status](https://github.com/Panier-App/ZIMRA/actions/workflows/ci.yml/badge.svg)
 
-# ZIMRA
+# ZIMRA Fiscalisation
 
 A type-safe and frictionless library for ZIMRA Fiscalisation
