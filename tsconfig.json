@@ -8,7 +8,7 @@
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true,
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
 
     /* Strictness */
     "strict": true,
@@ -18,7 +18,6 @@
     /* If transpiling with TypeScript: */
     "module": "NodeNext",
     "outDir": "dist",
-    "rootDir": "src",
     "sourceMap": true,
 
     /* AND if you're building for a library: */
@@ -29,5 +28,6 @@
 
     /* Doesn't require access to the DOM API */
     "lib": ["es2022"]
-  }
+  },
+  "include": ["src", "example"]
 }

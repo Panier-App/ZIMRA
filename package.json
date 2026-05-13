@@ -38,5 +38,9 @@
     "dev": "vitest",
     "local-release": "changeset version && changeset publish",
     "prepublishOnly": "npm run ci"
+  },
+  "dependencies": {
+    "ofetch": "^1.5.1",
+    "undici": "^8.2.0"
   }
 }
