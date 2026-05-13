@@ -17,6 +17,7 @@
 
     /* If transpiling with TypeScript: */
     "module": "NodeNext",
+    "rootDir": "src",
     "outDir": "dist",
     "sourceMap": true,
 
@@ -28,6 +29,5 @@
 
     /* Doesn't require access to the DOM API */
     "lib": ["es2022"]
-  },
-  "include": ["src", "example"]
+  }
 }
