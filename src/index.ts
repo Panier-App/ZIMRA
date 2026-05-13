@@ -1,47 +1,49 @@
-import { Panier } from './types.js'
-import { type FetchOptions, ofetch } from 'ofetch'
-import { ProxyAgent, Agent } from "undici"
+import { Panier } from './types.js';
+import { type FetchOptions, ofetch } from 'ofetch';
+import { ProxyAgent, Agent } from 'undici';
 
 export type { Panier } from './types.js';
 
 export class CreatePanierClient {
-    private host: string;
-    private proxy_url: string;
-    private unsecured_proxy_agent: boolean;
-    private APP_ID: string;
-    private API_KEY: string;
+  private host: string;
+  private proxy_url: string;
+  private unsecured_proxy_agent: boolean;
+  private APP_ID: string;
+  private API_KEY: string;
 
-    constructor(credentials: Panier.Credentials) {
-        this.host = credentials.host;
-        this.proxy_url = credentials?.proxy_url ?? "";
-        this.unsecured_proxy_agent = credentials?.unsecured_proxy_agent ?? false;
-        this.APP_ID = credentials.APP_ID;
-        this.API_KEY = credentials.API_KEY;
+  constructor(credentials: Panier.Credentials) {
+    this.host = credentials.host;
+    this.proxy_url = credentials?.proxy_url ?? '';
+    this.unsecured_proxy_agent = credentials?.unsecured_proxy_agent ?? false;
+    this.APP_ID = credentials.APP_ID;
+    this.API_KEY = credentials.API_KEY;
+  }
+
+  getFetchOptions(url_stem: string) {
+    const options: FetchOptions = {
+      headers: {
+        'app-id': this.APP_ID,
+        'api-key': this.API_KEY,
+      },
+    };
+
+    if (this.proxy_url) {
+      // Self-sign certificate
+      if (this.unsecured_proxy_agent) {
+        const unsecureAgent = new Agent({
+          connect: { rejectUnauthorized: false },
+        });
+        options.dispatcher = unsecureAgent;
+      } else {
+        const proxyAgent = new ProxyAgent(this.proxy_url + url_stem);
+        options.dispatcher = proxyAgent;
+      }
     }
 
-    getFetchOptions(url_stem: string) {
-        const options: FetchOptions = {
-            headers: {
-                'app-id': this.APP_ID,
-                'api-key': this.API_KEY
-            }
-        } 
+    return options;
+  }
 
-        if(this.proxy_url) {
-            // Self-sign certificate
-            if(this.unsecured_proxy_agent) {
-                const unsecureAgent = new Agent({ connect: { rejectUnauthorized: false } });
-                options.dispatcher = unsecureAgent
-            } else {
-                const proxyAgent = new ProxyAgent(this.proxy_url + url_stem)
-                options.dispatcher = proxyAgent
-            }
-        }
-
-        return options
-    }
-
-    /**
+  /**
      * This method is used to create a `ZIMRA Fiscal Tax Invoice`
         ```typescript
         // ... First Create Panier Client instance
@@ -56,8 +58,11 @@ export class CreatePanierClient {
         // Now you can use the Fiscal Invoice in our app 
         ```
      */
-    createFiscalInvoice(body: Panier.CreateFiscalInvoiceBody) {
-        const options = Object.assign({ body }, this.getFetchOptions('/zimra/generic'))
-        return ofetch(this.host, options)
-    }
+  createFiscalInvoice(body: Panier.CreateFiscalInvoiceBody) {
+    const options = Object.assign(
+      { body },
+      this.getFetchOptions('/zimra/generic'),
+    );
+    return ofetch(this.host, options);
+  }
 }

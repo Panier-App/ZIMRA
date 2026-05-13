@@ -1,4 +1,5 @@
-import { type Panier, CreatePanierClient } from "@panierapp/zimra" 
+/**
+ * import { type Panier, CreatePanierClient } from "@panierapp/zimra" 
 import { consola } from "consola"
 
 // Test Credentials
@@ -32,3 +33,4 @@ const fiscalInvoiceBody = {
 panier.createFiscalInvoice(fiscalInvoiceBody)
     .then(data => consola.log(data))
     .catch(error => consola.error(error));
+*/
