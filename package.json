@@ -37,7 +37,6 @@
     "prepublishOnly": "npm run ci"
   },
   "dependencies": {
-    "@panierapp/zimra": "file:panierapp-zimra-1.0.4.tgz",
     "ofetch": "^1.5.1",
     "undici": "^8.2.0"
   }
