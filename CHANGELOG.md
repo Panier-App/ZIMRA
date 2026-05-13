@@ -1,5 +1,11 @@
 # @panier/zimra
 
+## 1.0.4
+
+### Patch Changes
+
+- 35e2d74: Fix library
+
 ## 1.0.3
 
 ### Patch Changes
