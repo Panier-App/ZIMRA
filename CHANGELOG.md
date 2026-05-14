@@ -1,5 +1,11 @@
 # @panier/zimra
 
+## 1.0.7
+
+### Patch Changes
+
+- 04b9ae6: fix README
+
 ## 1.0.6
 
 ### Patch Changes
