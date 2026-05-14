@@ -1,5 +1,11 @@
 # @panier/zimra
 
+## 1.0.6
+
+### Patch Changes
+
+- 06c3426: Added more methods
+
 ## 1.0.5
 
 ### Patch Changes
