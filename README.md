@@ -508,24 +508,26 @@ console.log(get_device_information);
 Here is what the response will look like
 ```json
 { 
-    company: { 
-        name: 'EXAMPLE COMPANY',
-        phone: '0772000002',
-        email: 'support@panier.app',
-        address: '123, Street Road, Harare, Harare',
-        fax: null,
-        website: null,
-        subscription: { credit_score: 1409 } 
-    },
-    device_status: { 
-        fiscalDayStatus: 'FiscalDayOpened',
-        lastReceiptGlobalNo: 75,
-        lastFiscalDayNo: 15,
-        operationID: '0HNLGU4748JK0:00000001' 
-    },
-    device_id: 33389,
-    fiscal_day_no: 15,
-    device_serial_number: 'V9OWMFMUOS2OBJD5' 
+  "company": { 
+    "name": "EXAMPLE COMPANY",
+    "phone": "0772000002",
+    "email": "support@panier.app",
+    "address": "123, Street Road, Harare, Harare",
+    "fax": null,
+    "website": null,
+    "subscription": { 
+      "credit_score": 1409 
+    } 
+  },
+  "device_status": { 
+    "fiscalDayStatus": "FiscalDayOpened",
+    "lastReceiptGlobalNo": 75,
+    "lastFiscalDayNo": 15,
+    "operationID": "0HNLGU4748JK0:00000001" 
+  },
+  "device_id": 33389,
+  "fiscal_day_no": 15,
+  "device_serial_number": "V9OWMFMUOS2OBJD5" 
 }
 ```
 
