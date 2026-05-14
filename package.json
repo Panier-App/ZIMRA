@@ -25,18 +25,22 @@
   "license": "MIT",
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
+    "tsx": "^4.21.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.5"
   },
   "scripts": {
     "build": "tsc",
-    "ci": "npm run build && npm run test",
+    "ci": "npm run rmdir -- dist && npm run build && npm run test",
     "test": "vitest run",
     "dev": "vitest",
     "local-release": "changeset version && changeset publish",
-    "prepublishOnly": "npm run ci"
+    "prepublishOnly": "npm run ci",
+    "rmdir": "node -e \"var fs = require('fs'); process.argv.slice(1).map((fpath) => { try { return fs.rmdirSync(fpath, { recursive: true }) } catch(error) {} }); process.exit(0);\"",
+    "example": "npx tsx src/example.ts"
   },
   "dependencies": {
+    "consola": "^3.4.2",
     "ofetch": "^1.5.1",
     "undici": "^8.2.0"
   }

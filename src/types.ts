@@ -49,7 +49,7 @@ export namespace Panier {
          * | Non-VAT Withholding Tax | 514 |
          * | Standard rated 15.5% | 515 |
          */
-        zimra_tax_id: number;
+        zimra_tax_id: 1 | 2 | 3 | 514 | 515 | 517;
     };
 
     type Customer = {
@@ -125,4 +125,124 @@ export namespace Panier {
             | 'BankTransfer'
             | 'Other';
     };
+
+    // Response Data
+    type ZimraReceiptLine = {
+        receiptLineType: "Sale" | "Discount",
+        receiptLineNo: number,
+        receiptLineHSCode?: string, 
+        receiptLineName: string,
+        receiptLinePrice?: number,
+        receiptLineQuantity: number,
+        receiptLineTotal: number,
+        taxCode?: string,
+        taxPercent?: number, // Applied tax percent. In case of no VAT sale, 0 value should be used, in case of exempt this field should not be provided.
+        taxID: number
+    }
+
+    type ZimraMoneyTypeCode = "Cash" | "Card" | "MobileWallet" | "Coupon" | "Credit" | "BankTransfer" | "Other";
+
+    type ZimraReceiptPayment = {
+        moneyTypeCode: ZimraMoneyTypeCode,
+        paymentAmount: number //  value be less than or equal to 0 for CreditNote.
+    }
+
+    type ZimraReceiptTax = {
+        taxCode?: string,
+        taxPercent?: number,
+        taxID: number,
+        taxAmount: number, // In case of Non VAT and exempt, 0 should be sent in this field.
+        salesAmountWithTax: number
+    }
+
+    type ZimraReceiptCreditDebitNote = {
+        receiptID?: number,
+        deviceID?: number,
+        receiptGlobalNo?: number,
+        fiscalDayNo?: number
+    }
+
+    type ZimraReceiptBuyerData = {
+        buyerRegisterName: string,
+        buyerTradeName?: string,
+        vatNumber?: string,
+        buyerTIN: string,
+        buyerContacts?: {
+            phoneNo?: string,
+            email?: string
+        },
+        buyerAddress?: {
+            province: string,
+            city: string,
+            street: string,
+            houseNo: string,
+            district: string
+        }
+    }
+
+    type ZimraReceiptType = "FiscalInvoice" | "CreditNote" | "DebitNote";
+
+    type ZimraReceiptData = {
+        receipt: {
+            receiptType: ZimraReceiptType,
+            receiptCurrency: string,
+            receiptCounter: number,
+            receiptGlobalNo: number,
+            invoiceNo?: string,
+            buyerData?: ZimraReceiptBuyerData,
+            receiptNotes?: string,
+            receiptDate: string, // Local time without timezone information
+            creditDebitNote?: ZimraReceiptCreditDebitNote,
+            receiptLinesTaxInclusive: boolean,
+            receiptLines: ZimraReceiptLine[],
+            receiptTaxes: ZimraReceiptTax[],
+            receiptPayments: ZimraReceiptPayment[],
+            receiptTotal: number,
+            receiptPrintForm: "InvoiceA4" | "Receipt48", // InvoiceA4, Receipt48
+            receiptDeviceSignature: {
+                hash: string,
+                signature: string 
+            }
+        }
+    };
+
+    type ZimraValidationError = {
+        validationErrorCode: string,
+        validationErrorColor: 'Grey' | 'Yellow' | 'Red'
+    }
+
+    type ZimraReceipt = {
+        id: string,
+        receipt_type: 'FISCALINVOICE' | 'CREDITNOTE' | 'DEBITNOTE',
+        device_id: number,
+        device_serial_number: string,
+        receipt_currency: string,
+        receipt_counter: number,
+        receipt_global_no: number,
+        receipt_date: string,
+        receipt_total: number,
+        receipt_taxes: ZimraReceiptTax[],
+        previous_receipt_hash: string,
+        result_used_to_hash: string,
+        receipt_hash: string,
+        signature: string,
+        qr_code_url: string,
+        verification_code: string,
+        receipt_data: ZimraReceiptData,
+        validation_errors: ZimraValidationError[],
+        fiscal_day_no: number,
+    }
+
+    type ZodValidationError =  { 
+        code: string,
+        values: string[],
+        path: string[],
+        message: string 
+    }
+
+    export type PanierClientResponse = { 
+        created?: ZimraReceipt,  
+        error?: ZodValidationError | string
+    }
 }
+

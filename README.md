@@ -47,29 +47,28 @@ const fiscalInvoiceBody = {
       quantity: 2,
       discount: 0, // Optional
       hs_code: '1905.90.00',
-      zimra_tax_id: 512,
+      zimra_tax_id: 517,
     },
   ],
   currency_code: 'USD',
   money_type: 'Cash',
 } satisfies Panier.CreateFiscalInvoiceBody;
 
-const fiscal_invoice = await panier
-  .createFiscalInvoice(fiscalInvoiceBody)
-  .catch((error) => console.error(error));
+const fiscal_invoice = await panier.createFiscalInvoice(fiscalInvoiceBody)
+                                .catch(error => console.error(error))
 
-if (fiscal_invoice?.id) {
+if (fiscal_invoice?.created) {
   console.log('You have successfully created a fiscal invoice');
   console.log(fiscal_invoice);
 
   // Check for ZIMRA validation errors
-  if (fiscal_invoice.validation_errors.length === 0) {
+  if (fiscal_invoice.created.validation_errors.length === 0) {
     console.log('No validation Errors ');
   } else {
     console.log(
-      `You have ${fiscal_invoice.validation_errors.length} validation errors`,
+      `You have ${fiscal_invoice.created.validation_errors.length} validation errors`,
     );
-    console.log(fiscal_invoice.validation_errors);
+    console.log(fiscal_invoice.created.validation_errors);
   }
 } else {
   console.log('Failed to create a fiscal invoice');
@@ -103,16 +102,17 @@ const fiscalInvoiceWithCustomerBody = {
       quantity: 2,
       discount: 0, // Optional
       hs_code: '1905.90.00',
-      zimra_tax_id: 512, // See ZIMRA Tax ID Table for more optionals
+      zimra_tax_id: 517, // See ZIMRA Tax ID Table for more optionals
     },
   ],
   currency_code: 'USD',
   money_type: 'Cash',
 } satisfies Panier.CreateFiscalInvoiceBody;
 
-const fiscal_invoice_with_customer = await panier.createFiscalInvoice(fiscalInvoiceWithCustomerBody);
+const fiscal_invoice_with_customer = await panier.createFiscalInvoice(fiscalInvoiceWithCustomerBody)
+                                                .catch(error => console.error(error))
 
-if (fiscal_invoice_with_customer?.id) {
+if(fiscal_invoice_with_customer?.created) {
   console.log('You have successfully created a fiscal invoice');
   console.log(fiscal_invoice_with_customer);
 
@@ -121,7 +121,7 @@ if (fiscal_invoice_with_customer?.id) {
     console.log('No validation Errors ');
   } else {
     console.log(
-      `You have ${fiscal_invoice_with_customer.validation_errors.length} validation errors`,
+      `You have ${ fiscal_invoice_with_customer.validation_errors.length } validation errors`,
     );
     console.log(fiscal_invoice_with_customer.validation_errors);
   }
@@ -147,18 +147,17 @@ const creditNoteBody = {
       quantity: 2,
       discount: 0, // Optional
       hs_code: '1905.90.00',
-      zimra_tax_id: 512, // See ZIMRA Tax ID Table for more optionals
+      zimra_tax_id: 517, // See ZIMRA Tax ID Table for more optionals
     },
   ],
   currency_code: 'USD',
   money_type: 'Cash',
 } satisfies Panier.CreateCreditNoteBody;
 
-const credit_note = await panier
-  .createCreditNote(creditNoteBody)
-  .catch((error) => console.error(error));
+const credit_note = await panier.createCreditNote(creditNoteBody)
+                                .catch((error) => console.error(error));
 
-if (credit_note?.id) {
+if(credit_note?.created) {
   console.log('You have successfully created a credit note');
   console.log(credit_note);
 
@@ -167,7 +166,7 @@ if (credit_note?.id) {
     console.log('No validation Errors ');
   } else {
     console.log(
-      `You have ${credit_note.validation_errors.length} validation errors`,
+      `You have ${ credit_note.validation_errors.length } validation errors`,
     );
     console.log(credit_note.validation_errors);
   }
@@ -193,7 +192,7 @@ const debitNoteBody = {
             quantity: 2,
             discount: 0, // Optional
             hs_code: '1905.90.00',
-            zimra_tax_id: 512 // See ZIMRA Tax ID Table for more optionals
+            zimra_tax_id: 517 // See ZIMRA Tax ID Table for more optionals
         }
     ],
     currency_code: "USD",
@@ -203,7 +202,7 @@ const debitNoteBody = {
 const debit_note = await panier.createDebitNote(debitNoteBody);
                         .catch(error => console.error(error));
 
-if(debit_note?.id) {
+if(debit_note?.created) {
     console.log('You have successfully created a debit note')
     console.log(debit_note)
 
@@ -304,6 +303,47 @@ If you try to create a `ZIMRA Fiscal Tax Invoice`, `Credit Note` or `Debit Note`
 ### 2. Invoice Number Collisions
 The ZIMRA FDMS requires that all invoice_numbers be unique for a single tax payer. Meaning that if you were using another fiscal device before, you can not use the same invoice numbers that you used on that device with this library. You you do, ZIMRA will return a `RCPT020` error code which means `Invoice signature is not valid`. This will prevent your fiscal day from beign able to close and you would have to send an email to `csimango@zimra.co.zw` and `gsangare@zimra.co.zw` requesting that your fiscal day be manually closed on the ZIMRA side. You must include your `Company Name`, `Device ID` and current `Fiscal Day` in your email.
 
+### 3. ZIMRA Valitation Errors
+In the event that you get a `validation_error` send an email to `csimango@zimra.co.zw` and `gsangare@zimra.co.zw` requesting that your fiscal day be manually closed on the ZIMRA side. You must include your `Company Name`, `Device ID` and current `Fiscal Day` in your email. You can use the following table to see the meaning of each validation error code (_See the [ZIMRA Fiscal Device Gateway API Specification](https://www.zimra.co.zw/downloads/category/9-domestic-taxes?download=3807:fiscalisation-api-documentation) for more information_).
+|Validation Error Code|Color|Text|
+|-|-|-|
+|RCPT010|Red|Wrong currency code is used|
+|RCPT011|Red|Receipt counter is not sequential.|
+|RCPT012|Red|Receipt global number is not sequential.|
+|RCPT013|Red|Invoice number is not unique|
+|RCPT014|Yellow|Receipt date is earlier than fiscal day opening date|
+|RCPT015|Red|Credited/debited invoice data is not provided|
+|RCPT016|Red|No receipt lines provided|
+|RCPT017|Red|Taxes information is not provided|
+|RCPT018|Red|Payment information is not provided|
+|RCPT019|Red|Invoice total amount is not equal to sum of all invoice lines|
+|RCPT020|Red|Invoice signature is not valid|
+|RCPT021|Red|VAT tax is used in invoice while taxpayer is not VAT taxpayer|
+|RCPT022|Red|Invoice sales line price must be greater than 0 (less than 0 for Credit note), discount line price must be less than 0 for invoice|
+|RCPT023|Red|Invoice line quantity, must be positive|
+|RCPT024|Red|Invoice line total is not equal to unit price * quantity|
+|RCPT025|Red|Invalid tax is used|
+|RCPT026|Red|Incorrectly calculated tax amount|
+|RCPT027|Red|Incorrectly calculated total sales amount (including tax) / rate|
+|RCPT028|Red|Payment amount must be greater than or equal 0 (less than or equal to 0 for Credit note)|
+|RCPT029|Red|Credited/debited invoice information provided for regular invoice|
+|RCPT030|Red|Invoice date is earlier than previously submitted receipt date|
+|RCPT031|Yellow|Invoice is submitted with the future date|
+|RCPT032|Red|Credit / debit note refers to non-existing invoice|
+|RCPT033|Red|Credited/debited invoice is issued more than 12 months ago|
+|RCPT034|Red|Note for credit/debit note is not provided|
+|RCPT035|Red|Total credit note amount exceeds original invoice amount|
+|RCPT036|Red|Credit/debit note uses other taxes than are used in the original invoice|
+|RCPT037|Red|Invoice total amount is not equal to sum of all invoice lines and taxes applied|
+|RCPT038|Red|Invoice total amount is not equal to sum of sales amount including tax in tax table|
+|RCPT039|Red|Invoice total amount is not equal to sum of all payment amounts|
+|RCPT040|Red|Invoice total amount must be greater than or equal to 0 (less than or equal to 0 for Credit note)|
+|RCPT041|Yellow|Invoice is issued after fiscal day end|
+|RCPT042|Red|Credit/debit note uses other currency than is used in the original invoice|
+|RCPT043|Red|Mandatory buyer data fields are not provided|
+|RCPT047|Red|HS code must be sent if taxpayer is a VAT payer|
+|RCPT048|Red|HS code length must be 4 or 8 digits if taxpayer is not VAT payer, 4 or 8 digits if taxpayer is VAT payer and applied tax percent is bigger than 0, 8 digits if taxpayer is VAT payer and applied tax percent is equal to 0 or is empty|
+
 ## Methods
 
 ### `createFiscalInvoice()`
@@ -385,7 +425,7 @@ When your fiscal day is closed, [Panier](https://panier.app) automatically opens
 // First Create Panier Client instance
 
 const open_day = await panier.openDay()
-                        .catch((error) => error);
+                        .catch((error) => error.data);
 
 // fiscalDayStatus options "FiscalDayOpened", "FiscalDayClosed", "FiscalDayCloseFailed", "FiscalDayCloseInitiated"
 if (open_day?.fiscalDayStatus === 'FiscalDayOpened') {

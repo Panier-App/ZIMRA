@@ -1,6 +1,7 @@
-import { Panier } from './types.js';
-import { type FetchOptions, ofetch } from 'ofetch';
+import type { Panier } from './types.js';
+import { type FetchOptions, $fetch } from 'ofetch';
 import { ProxyAgent, Agent } from 'undici';
+import consola from "consola";
 
 export type { Panier } from './types.js';
 
@@ -19,13 +20,16 @@ export class CreatePanierClient {
         this.API_KEY = credentials.API_KEY;
     }
 
-    getFetchOptions(url_stem: string) {
-        const options: FetchOptions = {
+    getFetchOptions() {
+        const options: FetchOptions<'json'> = {
             method: 'POST',
             headers: {
+                'Content-Type': 'application/json',
                 'app-id': this.APP_ID,
                 'api-key': this.API_KEY,
-            }
+            },
+            ignoreResponseError: true,
+            responseType: 'json'
         };
 
         if(this.proxy_url) {
@@ -34,7 +38,7 @@ export class CreatePanierClient {
                 const unsecureAgent = new Agent({ connect: { rejectUnauthorized: false } });
                 options.dispatcher = unsecureAgent;
             } else {
-                const proxyAgent = new ProxyAgent(this.proxy_url + url_stem);
+                const proxyAgent = new ProxyAgent(this.proxy_url);
                 options.dispatcher = proxyAgent;
             }
         }
@@ -57,8 +61,10 @@ export class CreatePanierClient {
         // Now you can use the Fiscal Invoice in our app 
     ```
     */
-    createFiscalInvoice(body: Panier.CreateFiscalInvoiceBody) {
-        const options = Object.assign({ body }, this.getFetchOptions('/zimra/generic'));
-        return ofetch(this.host, options);
+    createFiscalInvoice(_body: Panier.CreateFiscalInvoiceBody) {
+        const url = this.host + '/zimra/generic'
+        const body = Object.assign({ type: 'Invoice' }, _body);
+        const options = Object.assign({ body }, this.getFetchOptions());
+        return $fetch<Panier.PanierClientResponse, 'json'>(url, options);
     }
 }
