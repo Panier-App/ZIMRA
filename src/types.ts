@@ -53,17 +53,23 @@ export namespace Panier {
     };
 
     type Customer = {
-        /** Customer name */
+        /** Name */
         name: string;
-        /** Customer phone number */
+        /** Phone number */
         phone: string;
-        /** Customer email address */
+        /** Email address */
         email: string;
-        /** Customer physical address */
-        address?: string;
-        /** Customer ZIMRA Tin Number */
+        /** Province */
+        province?: string;
+        /** City, town, growth point, farming area, mining area */
+        city?: string;
+        /** Street, stand number, village */
+        street?: string;
+        /** House or office number */
+        house_no?: string;
+        /** ZIMRA Tin Number */
         tin_number: string;
-        /** Customer ZIMRA VAT Number */
+        /** ZIMRA VAT Number */
         vat_number?: string;
     };
 
@@ -86,6 +92,8 @@ export namespace Panier {
             | 'Credit'
             | 'BankTransfer'
             | 'Other';
+        /** Note for credit note/debit note/invoice. */
+        receiptNotes?: string;
     };
 
     /** This is the schema of the object required to create a Credit Note */
@@ -105,6 +113,8 @@ export namespace Panier {
             | 'Credit'
             | 'BankTransfer'
             | 'Other';
+        /** Note for credit note/debit note/invoice. */
+        receiptNotes?: string;
     };
 
     /** This is the schema of the object required to create a Debit Note */
@@ -124,7 +134,15 @@ export namespace Panier {
             | 'Credit'
             | 'BankTransfer'
             | 'Other';
+        /** Note for credit note/debit note/invoice. */
+        receiptNotes?: string;
     };
+
+    /** This is the schema of the object required to find a ZIMRA Fiscal Invoice */
+    export type FindFiscalInvoiceBody = {
+        /** The invoice number of the ZIMRA Fiscal Tax Invoice that you want to find */
+        invoice_number: string;
+    }
 
     // Response Data
     type ZimraReceiptLine = {
@@ -211,6 +229,18 @@ export namespace Panier {
         validationErrorColor: 'Grey' | 'Yellow' | 'Red'
     }
 
+    type ZimraSubmitReceiptData = { 
+        receiptID: number,
+        serverDate: string,
+        receiptServerSignature: { 
+            certificateThumbprint: string,    
+            hash: string,
+            signature: string
+        },
+        validationErrors: ZimraValidationError[],    
+        operationID: string 
+    }
+
     type ZimraReceipt = {
         id: string,
         receipt_type: 'FISCALINVOICE' | 'CREDITNOTE' | 'DEBITNOTE',
@@ -225,6 +255,7 @@ export namespace Panier {
         previous_receipt_hash: string,
         result_used_to_hash: string,
         receipt_hash: string,
+        server_response: ZimraSubmitReceiptData,
         signature: string,
         qr_code_url: string,
         verification_code: string,
@@ -240,9 +271,46 @@ export namespace Panier {
         message: string 
     }
 
-    export type PanierClientResponse = { 
+    export type CreateClientResponse = { 
         created?: ZimraReceipt,  
         error?: ZodValidationError | string
+    }
+
+    type ZimraFiscalDayStatus = "FiscalDayOpened" | "FiscalDayClosed" | "FiscalDayCloseFailed" | "FiscalDayCloseInitiated";
+
+    export type ZimraDeviceStatus = {
+        operationID: String,
+        fiscalDayStatus: ZimraFiscalDayStatus,
+        fiscalDayReconciliationMode: "Auto" | "Manual",
+        fiscalDayServerSignature: {
+            certificateThumbprint: string,
+            hash: string,
+            signature: string
+        },
+        fiscalDayClosed: string,
+        lastFiscalDayNo: number,
+        lastReceiptGlobalNo: number,
+        fiscalDayClosingErrorCode: "BadCertificateSignature" | "MissingReceipts" | "ReceiptsWithValidationErrors" | "CountersMismatch"
+    }
+
+    export type DeviceInformation = {
+        company: {
+            name: string,
+            phone: string,
+            email: string,
+            address: string,
+            fax: string,
+            website: string,
+            subscription: {
+                credit_score: number
+            }
+        },
+        device_status: ZimraDeviceStatus,
+        device_id: number,
+        fiscal_day_no: number,
+        receipt_counter: number,
+        receipt_global_no: number,
+        device_serial_number: string,
     }
 }
 

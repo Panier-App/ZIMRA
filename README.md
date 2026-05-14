@@ -57,12 +57,12 @@ const fiscalInvoiceBody = {
 const fiscal_invoice = await panier.createFiscalInvoice(fiscalInvoiceBody)
                                 .catch(error => console.error(error))
 
-if (fiscal_invoice?.created) {
+if(fiscal_invoice?.created) {
   console.log('You have successfully created a fiscal invoice');
   console.log(fiscal_invoice);
 
   // Check for ZIMRA validation errors
-  if (fiscal_invoice.created.validation_errors.length === 0) {
+  if(fiscal_invoice.created.validation_errors.length === 0) {
     console.log('No validation Errors ');
   } else {
     console.log(
@@ -76,10 +76,87 @@ if (fiscal_invoice?.created) {
 }
 ```
 
-Et voila, that's it 🎉.
+Et voila, that's it 🎉. You should then get a response like this
+```json
+{
+  "created": {
+    "id": "cmp5e4a9g000czmjm1ixibpk9",
+    "device_id": 33389,
+    "device_serial_number": "V9OWMFMUOS2OBJD5",
+    "receipt_type": "FISCALINVOICE",
+    "receipt_currency": "USD",
+    "receipt_counter": 4,
+    "receipt_global_no": 68,
+    "receipt_date": "2026-05-14T13:13:33",
+    "receipt_total": 5.81,
+    "receipt_taxes": [
+      {
+        "taxID": 2,
+        "taxAmount": 0,
+        "salesAmountWithTax": 5.81,
+        "taxPercent": 0
+      }
+    ],
+    "previous_receipt_hash": "7d4+Q17Vb3Hx6vr7Dmt8D34T+PbwtY+zDBttwWSSYvs=",
+    "result_used_to_hash": "33389FISCALINVOICEUSD682026-05-14T13:13:335810.0005817d4+Q17Vb3Hx6vr7Dmt8D34T+PbwtY+zDBttwWSSYvs=",
+    "receipt_hash": "tHD7PbrF/YOQlV/vIVtr/byOrjCKHiMj5TByHPP0oTA=",
+    "signature": "jGpuAD+aKyxNmNxwj/QvaH/6Twh2OFkr+KsFSqoXVDSZ/OCTLN2gDTRU85fcQdtPINWsXMfsboJE+8/CkWSmwLCa9sASc6Exin/75N+2BWJXuJGSr+UxqmnHjeXWrOVHkTiW6YB/J2UCkkxmEUBq3JYc/QXn3SGnw3jFt+tSN1GeJouy1u8qsOZb6cZsAlsjR2SDGfKNxb6MB97C3S52+8UHSAL7TK3VwORr/NyiDiKeq+IvkN7OQINTRvs94lLDMSXgvhAFy9ITcbUzcqGPTKG01GQwHxjZw2+/DIdhTuG8g86f17m5yAdhBHwddrTYFha9wN8c+gHpEqnmhAhYsw==",
+    "qr_code_url": "https://fdmstest.zimra.co.zw/0000033389140520260000000068CC86EF9CDFA968E3",
+    "verification_code": "CC86-EF9C-DFA9-68E3",
+    "receipt_data": {
+      "receipt": {
+        "receiptType": "FiscalInvoice",
+        "receiptCurrency": "USD",
+        "receiptCounter": 4,
+        "receiptGlobalNo": 68,
+        "receiptDate": "2026-05-14T13:13:33",
+        "receiptLinesTaxInclusive": false,
+        "receiptLines": [
+          {
+            "receiptLineType": "Sale",
+            "receiptLineNo": 1,
+            "receiptLineHSCode": "08080101",
+            "receiptLineName": "Apples",
+            "receiptLinePrice": 5.81,
+            "receiptLineQuantity": 1,
+            "receiptLineTotal": 5.81,
+            "taxID": 2,
+            "taxPercent": 0
+          }
+        ],
+        "receiptTaxes": [
+          {
+            "taxID": 2,
+            "taxAmount": 0,
+            "salesAmountWithTax": 5.81,
+            "taxPercent": 0
+          }
+        ],
+        "receiptPayments": [
+          {
+            "moneyTypeCode": "Cash",
+            "paymentAmount": 5.81
+          }
+        ],
+        "receiptTotal": 5.81,
+        "receiptPrintForm": "InvoiceA4",
+        "receiptDeviceSignature": {
+          "hash": "tHD7PbrF/YOQlV/vIVtr/byOrjCKHiMj5TByHPP0oTA=",
+          "signature": "jGpuAD+aKyxNmNxwj/QvaH/6Twh2OFkr+KsFSqoXVDSZ/OCTLN2gDTRU85fcQdtPINWsXMfsboJE+8/CkWSmwLCa9sASc6Exin/75N+2BWJXuJGSr+UxqmnHjeXWrOVHkTiW6YB/J2UCkkxmEUBq3JYc/QXn3SGnw3jFt+tSN1GeJouy1u8qsOZb6cZsAlsjR2SDGfKNxb6MB97C3S52+8UHSAL7TK3VwORr/NyiDiKeq+IvkN7OQINTRvs94lLDMSXgvhAFy9ITcbUzcqGPTKG01GQwHxjZw2+/DIdhTuG8g86f17m5yAdhBHwddrTYFha9wN8c+gHpEqnmhAhYsw=="
+        },
+        "invoiceNo": "INV000001"
+      }
+    },
+    "validation_errors": [],
+    "fiscal_day_no": 15
+  }
+}
+```
 
 ## Create a Fiscal Tax Invoice with customer details
-You can also add customer details to your fiscal tax invoice but you have to add their `Tin Number`, `Phone` and `Email` for their information to appear on the Buyer section of the ZIMRA Fiscal Tax Invoice.
+You can also add customer details to your fiscal tax invoice but you have to add their `Tin Number`, `Phone` and `Email` for their information to appear on the `Buyer section` of the ZIMRA Fiscal Tax Invoice. 
+
+> If you want the buyer's address to appear on the `Buyer section` of the ZIMRA Fiscal Tax Invoice, you need to add the customer's `province`, `city`, `street` and `house_no`
 
 ```typescript
 // First Create Panier Client instance
@@ -91,7 +168,10 @@ const fiscalInvoiceWithCustomerBody = {
     name: 'Luke Tawanda',
     phone: '0772000001',
     email: 'luke.tawanda@gmail.com',
-    address: '123 Harare drive', // Optional
+    province: 'Mashonaland East', // Optional
+    city: 'Marondera', // Optional
+    street: 'Harare drive', // Optional
+    house_no: '123', // Optional
     tin_number: '2000820000',
     vat_number: '220411600', // Optional
   },
@@ -106,7 +186,7 @@ const fiscalInvoiceWithCustomerBody = {
     },
   ],
   currency_code: 'USD',
-  money_type: 'Cash',
+  money_type: 'Cash'
 } satisfies Panier.CreateFiscalInvoiceBody;
 
 const fiscal_invoice_with_customer = await panier.createFiscalInvoice(fiscalInvoiceWithCustomerBody)
@@ -117,13 +197,13 @@ if(fiscal_invoice_with_customer?.created) {
   console.log(fiscal_invoice_with_customer);
 
   // Check for ZIMRA validation errors
-  if (fiscal_invoice_with_customer.validation_errors.length === 0) {
+  if(fiscal_invoice_with_customer.created.validation_errors.length === 0) {
     console.log('No validation Errors ');
   } else {
     console.log(
-      `You have ${ fiscal_invoice_with_customer.validation_errors.length } validation errors`,
+      `You have ${ fiscal_invoice_with_customer.created.validation_errors.length } validation errors`,
     );
-    console.log(fiscal_invoice_with_customer.validation_errors);
+    console.log(fiscal_invoice_with_customer.created.validation_errors);
   }
 } else {
   console.log('Failed to create a fiscal invoice');
@@ -144,7 +224,7 @@ const creditNoteBody = {
     {
       name: 'Jumbo Ban',
       selling_price: 0.9, // Selling Price Excluding Tax
-      quantity: 2,
+      quantity: 1,
       discount: 0, // Optional
       hs_code: '1905.90.00',
       zimra_tax_id: 517, // See ZIMRA Tax ID Table for more optionals
@@ -152,6 +232,7 @@ const creditNoteBody = {
   ],
   currency_code: 'USD',
   money_type: 'Cash',
+  receiptNotes: 'The customer was over charged by $2.70'
 } satisfies Panier.CreateCreditNoteBody;
 
 const credit_note = await panier.createCreditNote(creditNoteBody)
@@ -162,13 +243,11 @@ if(credit_note?.created) {
   console.log(credit_note);
 
   // Check for ZIMRA validation errors
-  if (credit_note.validation_errors.length === 0) {
+  if(credit_note.created.validation_errors.length === 0) {
     console.log('No validation Errors ');
   } else {
-    console.log(
-      `You have ${ credit_note.validation_errors.length } validation errors`,
-    );
-    console.log(credit_note.validation_errors);
+    console.log(`You have ${ credit_note.created.validation_errors.length } validation errors`);
+    console.log(credit_note.created.validation_errors);
   }
 } else {
   console.log('Failed to create a credit note');
@@ -196,28 +275,29 @@ const debitNoteBody = {
         }
     ],
     currency_code: "USD",
-    money_type: "Cash"
+    money_type: "Cash",
+    receiptNotes: 'The customer was under charged by $1.80'
 } satisfies Panier.CreateDebitNoteBody
 
-const debit_note = await panier.createDebitNote(debitNoteBody);
-                        .catch(error => console.error(error));
+const debit_note = await panier.createDebitNote(debitNoteBody)
+                              .catch(error => console.error(error));
 
 if(debit_note?.created) {
     console.log('You have successfully created a debit note')
     console.log(debit_note)
 
     // Check for ZIMRA validation errors
-    if(debit_note.validation_errors.length === 0) {
+    if(debit_note.created.validation_errors.length === 0) {
         console.log('No validation Errors ')
     }
     else {
-        console.log(`You have ${ debit_note.validation_errors.length } validation errors`)
-        console.log(debit_note.validation_errors)
+        console.log(`You have ${ debit_note.created.validation_errors.length } validation errors`)
+        console.log(debit_note.created.validation_errors)
     }
 }
 else {
     console.log('Failed to create a debit note')
-    console.log(zimraDebitNote)
+    console.log(debit_note)
 }
 
 ```
@@ -360,6 +440,7 @@ const fiscal_invoice = await panier.createFiscalInvoice(fiscalInvoiceBody)
                                     .catch((error) => error);
 
 // Now you can use the Fiscal Invoice in our app
+console.log(fiscal_invoice);
 ```
 
 ### `createCreditNote()`
@@ -376,6 +457,7 @@ const credit_note = await panier.createCreditNote(creditNoteBody)
                                 .catch((error) => error);
 
 // Now you can use the Credit Note in our app
+console.log(credit_note);
 ```
 
 ### `createDebitNote()`
@@ -385,13 +467,14 @@ This method is used to create a `Debit Note`
 // First Create Panier Client instance
 
 const debitNoteBody = {
-  /** ... add Debit Note Body */
+  // ... add Debit Note Body
 } satisfies Panier.CreateDebitNoteBody;
 
 const debit_note = await panier.createDebitNote(debitNoteBody)
                                 .catch((error) => error);
 
 // Now you can use the Debit Note in our app
+console.log(debit_note);
 ```
 
 ### `find()`
@@ -399,11 +482,15 @@ This method is used to find a `ZIMRA Fiscal Invoice` and it's associated `Credit
 
 ```typescript
 // First Create Panier Client instance
-const invoice_number = 'INV000001';
-const getFiscalInvoice = await panier.find(invoice_number)
+const fidnBody = {
+  invoice_number: 'INV000001'
+} satisfies Panier.FindFiscalInvoiceBody
+
+const getFiscalInvoice = await panier.find(fidnBody)
                                     .catch((error) => error);
 
 // Now you can use the Fiscal Invoice in our app
+console.log(getFiscalInvoice);
 ```
 
 ### `getDeviceInformation()`
@@ -416,6 +503,30 @@ const get_device_information = await panier.getDeviceInformation()
                                             .catch((error) => error);
 
 // Now you can use the device information in our app
+console.log(get_device_information);
+```
+Here is what the response will look like
+```json
+{ 
+    company: { 
+        name: 'EXAMPLE COMPANY',
+        phone: '0772000002',
+        email: 'support@panier.app',
+        address: '123, Street Road, Harare, Harare',
+        fax: null,
+        website: null,
+        subscription: { credit_score: 1409 } 
+    },
+    device_status: { 
+        fiscalDayStatus: 'FiscalDayOpened',
+        lastReceiptGlobalNo: 75,
+        lastFiscalDayNo: 15,
+        operationID: '0HNLGU4748JK0:00000001' 
+    },
+    device_id: 33389,
+    fiscal_day_no: 15,
+    device_serial_number: 'V9OWMFMUOS2OBJD5' 
+}
 ```
 
 ### `openDay()`
@@ -428,7 +539,7 @@ const open_day = await panier.openDay()
                         .catch((error) => error.data);
 
 // fiscalDayStatus options "FiscalDayOpened", "FiscalDayClosed", "FiscalDayCloseFailed", "FiscalDayCloseInitiated"
-if (open_day?.fiscalDayStatus === 'FiscalDayOpened') {
+if(open_day?.fiscalDayStatus === 'FiscalDayOpened') {
   // Do some operation now that your fiscal day is opened
 }
 ```
@@ -437,14 +548,14 @@ if (open_day?.fiscalDayStatus === 'FiscalDayOpened') {
 [Panier](https://panier.app) automatically closes your fiscal day 23 hours and 30 minutes after your fiscal day was opened. However this method allows you to manually close your fiscal day.
 
 ```typescript
-/** ... First Create Panier Client instance */
+// ... First Create Panier Client instance
 
 const close_day = await panier.closeDay()
                             .catch((error) => error);
 
 // fiscalDayStatus opitons "FiscalDayOpened", "FiscalDayClosed", "FiscalDayCloseFailed", "FiscalDayCloseInitiated"
-if (close_day?.fiscalDayStatus === 'FiscalDayClosed') {
-  /** Do some operation now that your fiscal day is closed **/
+if(close_day?.fiscalDayStatus === 'FiscalDayClosed') {
+  // Do some operation now that your fiscal day is closed
 }
 ```
 
@@ -474,12 +585,15 @@ if (close_day?.fiscalDayStatus === 'FiscalDayClosed') {
 ### `Customer`
 | Name         | Type   | Required | Max Length | Description               |
 | :----------- | ------ | -------- | ---------- | ------------------------- |
-| `name`       | string | `Yes`    | 190        | Customer name             |
-| `email`      | string | `Yes`    | 190        | Customer email address    |
-| `phone`      | string | `Yes`    | 20         | Customer phone number     |
-| `address`    | string | `No`     | 190        | Customer physical address |
-| `tin_number` | string | `Yes`    | 20         | Customer ZIMRA Tin Number |
-| `vat_number` | string | `No`     | 20         | Customer ZIMRA VAT Number |
+| `name`       | string | `Yes`    | 190        | Name             |
+| `email`      | string | `Yes`    | 190        | Email address    |
+| `phone`      | string | `Yes`    | 20         |  Phone number     |
+| `province`    | string | `No`     | 190        | Province name  |
+| `city`    | string | `No`     | 190        | City, town, growth point, farming area, mining area  |
+| `street`    | string | `No`     | 190        | Street, stand number, village |
+| `house_no`    | string | `No`     | 190        | House or office number |
+| `tin_number` | string | `Yes`    | 20         | ZIMRA Tin Number |
+| `vat_number` | string | `No`     | 20         | ZIMRA VAT Number |
 
 
 ### `CreateZimraFiscalInvoiceBody`
@@ -499,6 +613,7 @@ if (close_day?.fiscalDayStatus === 'FiscalDayClosed') {
 | `products`  | `Product[]` | `Yes` | 1000 |   | List of products on the Credit Note                                                          |
 | `currency_code` | string | `Yes` |    |   | This is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) Currency Code e.g ZWG or USD. |
 | `money_type` | string | `Yes` |   | `Cash`, `Card`, `MobileWallet`, `Coupon`, `Credit`, `BankTransfer`, `Other` | Payment method that you have settled the credit note with your customer |
+| `receiptNotes` | string | `No` |  |  | Note for credit or debit notes |
 
 
 ### `CreateDebitNoteBody`
@@ -508,3 +623,4 @@ if (close_day?.fiscalDayStatus === 'FiscalDayClosed') {
 | `products` | `Product[]` | `Yes` | 1000 |  | List of products on the Debit Note |
 | `currency_code` | string | `Yes` |   |   | This is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) Currency Code e.g ZWG or USD. |
 | `money_type` | string | `Yes` |   | `Cash`, `Card`, `MobileWallet`, `Coupon`, `Credit`, `BankTransfer`, `Other` | Payment method that you have settled the credit note with your customer  |
+| `receiptNotes` | string | `No` |  |  | Note for credit or debit notes |
