@@ -1,4 +1,5 @@
 ![Build Status](https://github.com/Panier-App/ZIMRA/actions/workflows/ci.yml/badge.svg)
+[![Socket Badge](https://socket.dev/api/badge/npm/package/@panierapp/zimra)](https://socket.dev/npm/package/@panierapp/zimra)
 
 ## ZIMRA Fiscalisation
 
