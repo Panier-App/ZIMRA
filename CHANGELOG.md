@@ -1,5 +1,11 @@
 # @panier/zimra
 
+## 1.0.8
+
+### Patch Changes
+
+- 2cb3f05: Added badges to the README
+
 ## 1.0.7
 
 ### Patch Changes
